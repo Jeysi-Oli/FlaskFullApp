@@ -23,6 +23,15 @@ db.init_app(app)
 # This creates the tables automatically when the app starts (Required for Railway/Production)
 with app.app_context():
     db.create_all()
+    
+    # Check if admin exists, if not, create it
+    if not User.query.filter_by(username='admin').first():
+        print("Creating default admin account...")
+        admin = User(username='admin', password=generate_password_hash('admin123'), role='admin')
+        viewer = User(username='viewer', password=generate_password_hash('viewer123'), role='viewer')
+        db.session.add_all([admin, viewer])
+        db.session.commit()
+        print("Default accounts created.")
 
 # ---------------- HOME PAGE ----------------
 @app.route('/')
