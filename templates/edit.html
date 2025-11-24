@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{# 
+  This tells Flask to use 'base.html' as the main layout.
+  Whatever we put inside {% block content %} will replace the content block in base.html.
+#}
+
+{% block content %}
+{# Start of the page-specific content #}
+
+<h2>
+  {{ 'Edit' if form.title.data else 'Add' }} Movie
+  {# 
+    If form.title.data has a value (editing an existing movie), show "Edit Movie".
+    Otherwise, show "Add Movie" for creating a new movie.
+  #}
+</h2>
+
+<form method="POST">
+  {# Hidden CSRF token for security (prevents malicious form submissions) #}
+  {{ form.hidden_tag() }}
+
+  {# Movie Title input field #}
+  <p>
+    {{ form.title.label }}  {# Label text: "Movie Title" #}
+    {{ form.title() }}       {# Input box for entering movie title #}
+  </p>
+
+  {# Movie Description input field #}
+  <p>
+    {{ form.description.label }}  {# Label text: "Description" #}
+    {{ form.description(rows=3) }} {# Textarea with 3 rows #}
+  </p>
+
+  {# Submit button to save/add the movie #}
+  <p>
+    {{ form.submit() }}  {# Button displays "Save" #}
+  </p>
+</form>
+
+{% endblock %}
+{# End of page-specific content #}

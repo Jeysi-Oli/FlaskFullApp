@@ -1,0 +1,232 @@
+Step 1
+Create a directory or your main project folder
+
+Step 2
+Create a virtual Environment:
+python -m venv venv
+
+Step 3
+Activate virtual Environment:
+venv\Scripts\Activate
+
+if there is exection policy error that appear use command prompt as your terminal
+
+then activate virtual Environment:
+venv\Scripts\Activate
+
+Step 4
+pip install flask flask_sqlalchemy flask_wtf werkzeug WTForms
+
+Step 5
+Create the following Folders and Files:
+
+static
+---- style.css
+templates
+---- add.movie.html
+---- base.html
+---- edit.html
+---- form.html
+---- index.html
+---- login.html
+---- manage_movies.html
+---- rate.html
+---- view.html
+app.py
+forms.py
+models.py
+
+========================================================
+
+Movie Rating App – Full Explanation
+1. What is this app?
+
+This app lets people:
+  Admins: Add, edit, or delete movies.
+  Viewers: Rate movies by giving stars (1–5) and write comments.
+  Users must log in before using it.
+
+It uses:
+  Flask for the web framework.
+  SQLAlchemy (ORM) to talk to a database.
+  WTForms for forms (login, rating, adding movies).
+  Jinja2 templates to make HTML pages dynamic.
+  Sessions to remember logged-in users.
+  CSRF protection to keep forms safe.
+
+2. Python Backend – app.py
+a. Setting up the app
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secretkey123'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///movies.db'
+db.init_app(app)
+
+Code Explanation:
+Flask(__name__) → Think of this as turning on a little web server so your computer can show web pages.
+SECRET_KEY → A secret code that keeps your forms safe from hackers.
+SQLALCHEMY_DATABASE_URI → This tells the app where to save data (here, in a file called movies.db).
+db.init_app(app) → Connects your database to the app.
+
+b. Routes – what happens when you visit a page
+A route is like a street sign: it tells Flask which code to run when a user visits a certain address (URL).
+
+Home Page
+@app.route('/')
+def index():
+    movies = Movie.query.all()
+    return render_template('index.html', title='Home', movies=movies)
+
+
+@app.route('/') → When the user visits / (the home page), this function runs.
+
+Movie.query.all() → Fetch all movies from the database.
+render_template('index.html', ...) → Show the HTML page index.html and send it some information (like the movie list and page title).
+
+Login Page
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        ...
+
+methods=['GET', 'POST'] → Means the page can show the form (GET) or submit the form (POST).
+LoginForm() → Creates a login form for the user.
+form.validate_on_submit() → Checks if the user filled the form correctly and pressed submit.
+check_password_hash(user.password, form.password.data) → Checks if the password typed matches the saved (hashed) password.
+
+Logout
+session.pop('user', None)
+session.pop('role', None)
+
+session → A special memory for the user, so the app knows who is logged in.
+
+pop() → Removes the user info when they log out.
+
+Rate a Movie
+form.movieList.choices = [(m.title, m.title) for m in movies]
+
+Creates a dropdown list with all movie titles so the user can pick one to rate.
+
+db.session.add(rating) → Adds the new rating to the database.
+db.session.commit() → Saves it permanently.
+
+Admin Functions
+
+@app.route('/add_movie') → Admin adds a movie.
+@app.route('/edit_movie/<id>') → Admin edits a movie.
+@app.route('/delete_movie/<id>') → Admin deletes a movie.
+
+Role Check Example:
+
+if session.get('role') != 'admin':
+    flash('Access denied.', 'danger')
+    return redirect(url_for('index'))
+
+Only allows admins to access admin pages.
+flash() → Shows a small message to the user.
+redirect(url_for(...)) → Sends the user to another page.
+
+c. Database Initialization
+db.create_all()
+
+Makes all the tables (users, movies, ratings) in the database if they don’t exist.
+
+3. Models – How data is stored (models.py)
+We use SQLAlchemy, an ORM (Object-Relational Mapper).
+
+What is an ORM?
+Think of it as a translator. Python code talks to the database in a friendly Python way, and SQLAlchemy converts it into SQL commands for SQLite.
+
+User Table
+class User(db.Model):
+    username = db.Column(db.String(50), unique=True)
+    password = db.Column(db.String(200))
+    role = db.Column(db.String(10))
+
+Stores username, password (hashed), and role (admin or viewer).
+
+Movie Table
+class Movie(db.Model):
+    title = db.Column(db.String(100))
+    description = db.Column(db.Text)
+
+Stores movie title and description.
+
+Rating Table
+class Rating(db.Model):
+    name = db.Column(db.String(50))
+    movie = db.Column(db.String(100))
+    stars = db.Column(db.Integer)
+    remarks = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+Stores who rated, which movie, how many stars, comments, and when it happened.
+
+4. Forms – How users type data (forms.py)
+WTForms
+  Helps create forms in Python.
+  Handles validation automatically.
+
+Example: DataRequired() → Cannot leave the field empty.
+
+CSRF Protection
+form.hidden_tag() → Adds a secret token to the form.
+Prevents CSRF attacks, which is when hackers try to trick a logged-in user into submitting a form without knowing.
+
+5. Templates – How the page looks (.html)
+Jinja2
+Jinja2 is a template engine.
+Lets you combine Python data and HTML.
+Example:
+
+{% for m in movies %}
+  <tr><td>{{ m.title }}</td></tr>
+{% endfor %}
+Loops through all movies and displays them in a table.
+
+{{ m.title }} → Inserts Python data into HTML.
+
+Conditional Example:
+{{ 'Edit' if form.title.data else 'Add' }} Movie
+
+Shows "Edit Movie" if we are editing an existing movie.
+
+Otherwise, shows "Add Movie".
+
+6. Sessions
+Sessions remember who the user is while they browse the site.
+Stored on the server but linked to the user via a cookie in the browser.
+
+Example:
+
+session['user'] = user.username
+session['role'] = user.role
+
+7. Flash Messages
+Temporary messages that show on the next page.
+Example:
+
+flash('Login successful!', 'success')
+success or danger can be used to style the message.
+
+8. Summary – How it all works together
+
+User visits a page → Flask sees the route.
+Route function runs → Can fetch data from database or show a form.
+Forms → User fills data, submits it, Flask validates.
+Database → SQLAlchemy saves or retrieves data.
+Templates → Jinja2 dynamically shows the data in HTML.
+Sessions & Roles → Keep track of who’s logged in and restrict access.
+CSRF protection & flash messages → Keep forms safe and user informed.
+
+In short:
+
+Flask = web framework
+Jinja2 = dynamic HTML templates
+WTForms = forms with validation
+CSRF = protects forms
+Session = remembers logged-in users
+SQLAlchemy (ORM) = makes database easy to use
+Flash = shows messages
+Routes = define what each page does

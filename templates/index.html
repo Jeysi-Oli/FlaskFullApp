@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{# 
+  This tells Flask to use 'base.html' as the main layout.
+  The content we define here will replace the {% block content %} in base.html.
+#}
+
+{% block content %}
+{# Start of the main content for the home page #}
+
+<h1>Movie Ranker</h1>
+{# Main heading of the page #}
+
+<hr>
+{# Horizontal line to separate heading from text #}
+
+<p>Rate the movies you like and give some comments</p>
+{# Short description or instruction for the user #}
+
+{% endblock %}
+{# End of content block #}

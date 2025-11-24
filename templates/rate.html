@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{# 
+  This tells Flask to use 'base.html' as the main layout.
+  The content inside {% block content %} will replace the content block in base.html.
+#}
+
+{% block content %}
+{# Start of page-specific content #}
+
+<h2>Rate The Movie</h2>
+{# Heading for the rating page #}
+
+<form method="POST">
+    {# Hidden CSRF token for security to prevent malicious submissions #}
+    {{ form.hidden_tag() }}
+
+    {# Name input field #}
+    <p>
+        {{ form.name.label }}  {# Label: "Enter Name" #}
+        <br>
+        {{ form.name(size=30) }} {# Input box, width of 30 characters #}
+    </p>
+
+    {# Movie selection dropdown #}
+    <p>
+        {{ form.movieList.label }}  {# Label: "Movie" #}
+        <br>
+        {{ form.movieList() }} {# Dropdown list populated with movie titles #}
+    </p>
+
+    {# Star rating selection #}
+    <p>
+        {{ form.stars.label }}  {# Label: "Rating (1–5 Stars)" #}
+        <br>
+        {{ form.stars() }} {# Dropdown to select 1–5 stars #}
+    </p>
+
+    {# Remarks text area #}
+    <p>
+        {{ form.remarks.label }}  {# Label: "Remarks" #}
+        <br>
+        {{ form.remarks() }} {# Multi-line text area for comments #}
+    </p>
+
+    {# Submit button #}
+    <p>
+        {{ form.submit() }}  {# Button displays "Submit" #}
+    </p>
+</form>
+
+{% endblock %}
+{# End of page-specific content #}

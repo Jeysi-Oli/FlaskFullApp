@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{# 
+  Use 'base.html' as the main layout.
+  The content inside {% block content %} will replace the content block in base.html.
+#}
+
+{% block content %}
+{# Start of page-specific content #}
+
+<h2>Manage Movies</h2>
+{# Heading for the admin page #}
+
+<a href="{{ url_for('logout') }}">Logout</a>
+{# Link for admin to log out #}
+
+<a href="{{ url_for('add_movie') }}">Add Movie</a>
+{# Link to add a new movie #}
+
+<table border="1" cellpadding="5">
+  {# A simple table to display movies. 
+      border="1" makes table borders visible, cellpadding="5" adds space inside cells #}
+  
+  <tr>
+    <th>Title</th>
+    <th>Description</th>
+    <th>Actions</th>
+  </tr>
+  {# Table headers #}
+
+  {% for m in movies %}
+  {# Loop through all movies passed from Flask and create a table row for each #}
+  <tr>
+    <td>{{ m.title }}</td>        {# Movie title #}
+    <td>{{ m.description }}</td>  {# Movie description #}
+    <td>
+      <a href="{{ url_for('edit_movie', id=m.id) }}">Edit</a> |
+      {# Link to edit this movie, passing the movie id #}
+      <a href="{{ url_for('delete_movie', id=m.id) }}">Delete</a>
+      {# Link to delete this movie, passing the movie id #}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+<a href="{{ url_for('logout') }}">Logout</a>
+{# Another logout link at the bottom for convenience #}
+
+{% endblock %}
+{# End of page-specific content #}

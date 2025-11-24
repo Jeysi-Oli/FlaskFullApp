@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ title }}</title>
+  {# 
+    The <title> tag sets the text shown in the browser tab.
+    {{ title }} comes from Flask when we render_template with a title variable.
+  #}
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  {# 
+    Link to the CSS file for styling.
+    url_for('static', filename='style.css') generates the correct path to static/style.css
+  #}
+</head>
+
+<body>
+  <nav>
+    <header>
+        {# Navigation links for the site #}
+        <a href="{{ url_for('index') }}">Home</a> |  {# Link to home page #}
+        <a href="{{ url_for('rate') }}">Rate</a>      {# Link to rating page #}
+    </header>
+  </nav>
+
+  <hr>  {# A horizontal line to separate nav from main content #}
+
+  <main>
+    {% block content %}
+    {# 
+      This is where the content of each page will appear.
+      Other templates like add/edit movie, login, view ratings will fill this block.
+    #}
+    
+    {% endblock %}
+  </main>
+</body>
+</html>

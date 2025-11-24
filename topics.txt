@@ -1,0 +1,171 @@
+1. Flask = Web Framework
+
+What it is:
+    - Flask is a toolkit for building websites and web apps in Python.
+    - Think of it like a set of building blocks that makes it easier to create web pages and handle user interactions.
+
+Why we need it:
+    - Without Flask, we would have to write low-level code to handle HTTP requests, routes, forms, and responses manually.
+    - Flask handles all that for us and lets us focus on building features.
+
+How it works in your app:
+    - You define routes (like /login, /rate, /manage) and Flask runs the corresponding Python code when someone visits that page.
+    - Flask can render HTML templates, handle forms, manage sessions, and more.
+
+Simple analogy:
+- Flask is like the foundation and walls of a house. It gives structure so you can add rooms (pages) and furniture (forms, tables, content) easily.
+
+2. Jinja2 = Dynamic HTML Templates
+
+What it is:
+- Jinja2 is the template engine Flask uses to create HTML pages dynamically.
+- Allows mixing Python logic with HTML.
+
+Why we need it:
+
+- Without Jinja2, you’d have to write static HTML for every page and manually insert data.
+- Jinja2 allows you to insert variables, loops, and conditions directly in HTML.
+
+How it works in your app:
+
+Example:
+
+{% for m in movies %}
+  <tr><td>{{ m.title }}</td></tr>
+{% endfor %}
+
+This loops through all movies in the database and creates a table row for each.
+{{ m.title }} inserts the movie title.
+
+Simple analogy:
+Jinja2 is like a smart printer. You give it a template (HTML) and some data (Python variables), and it prints a customized page for each user.
+
+3. WTForms = Forms with Validation
+
+What it is:
+
+- WTForms is a library for creating forms in Flask.
+- Handles input fields, dropdowns, text areas, checkboxes, etc.
+
+Why we need it:
+
+- Makes creating forms easy and secure.
+- Provides validation, so you can check if a user typed something correctly (e.g., not leaving a required field blank).
+
+How it works in your app:
+You define forms like LoginForm, RateForm, MovieForm.
+
+Example:
+
+username = StringField("Username", validators=[DataRequired()])
+
+- This creates a text box for username and ensures it’s not empty when submitted.
+
+Simple analogy:
+- WTForms is like a form template with built-in checks. It makes sure users fill in the boxes correctly before you process the data.
+
+4. CSRF = Protects Forms
+
+What it is:
+- CSRF stands for Cross-Site Request Forgery.
+- It’s a type of attack where hackers trick a user’s browser into submitting a form without their knowledge.
+
+Why we need it:
+- Protects your app from malicious form submissions.
+- Without CSRF protection, someone could make a user submit unwanted data (like deleting a movie) without logging in.
+
+How it works in your app:
+- WTForms automatically adds a hidden token to every form:
+
+{{ form.hidden_tag() }}
+
+- Flask checks this token on form submission. If the token is missing or invalid, the submission is rejected.
+
+Simple analogy:
+
+- CSRF token is like a secret handshake that proves the form came from your app and not a hacker.
+
+5. Session = Remembers Logged-in Users
+
+What it is:
+
+- Session is a special storage that remembers information about the user while they are browsing.
+
+Why we need it:
+
+- HTTP is stateless, which means the website normally doesn’t remember who you are.
+- Sessions let you keep track of users, so they stay logged in and can access pages based on their role (admin/viewer).
+
+How it works in your app:
+
+- When a user logs in:
+
+session['user'] = user.username
+session['role'] = user.role
+
+Later, you can check:
+
+if session.get('role') != 'admin':
+    flash('Access denied')
+
+This restricts pages based on user role.
+
+Simple analogy:
+- Session is like a backpack. When a user logs in, you put their username and role in it. Every page they visit, you check the backpack to know who they are.
+
+6. SQLAlchemy (ORM) = Makes Database Easy
+
+What it is:
+
+- SQLAlchemy is an ORM (Object-Relational Mapper).
+- Lets you interact with the database using Python objects instead of writing raw SQL queries.
+
+Why we need it:
+
+- Writing SQL can be tricky and error-prone.
+- ORM allows you to work in Python language, and it automatically translates it to SQL.
+
+How it works in your app:
+
+Define models like:
+
+class Movie(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100))
+
+Add a new movie:
+
+db.session.add(movie)
+db.session.commit()
+
+SQLAlchemy handles all the SQL commands for you.
+
+Simple analogy:
+
+SQLAlchemy is like a translator. You speak Python, and it speaks SQL to the database.
+
+7. Routes = Define What Each Page Does
+
+What it is:
+
+- A route is like a map or street sign in your app. It tells Flask what code to run when a user visits a certain URL.
+
+Why we need it:
+
+- Without routes, Flask wouldn’t know what to do when someone visits /login or /rate.
+
+How it works in your app:
+
+Example:
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    ...
+
+- When the user goes to /login, Flask runs the login() function.
+- GET → shows the form.
+- POST → processes the form submission.
+
+Simple analogy:
+
+- Routes are like directions in a theme park. They tell Flask which ride (function) to run when you go to a certain location (URL).

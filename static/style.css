@@ -1,0 +1,15 @@
+body { 
+    font-family: Arial; background: #f7f7f7; margin: 20px; 
+}
+.container { 
+    background: white; padding: 20px; border-radius: 8px; 
+}
+nav a { 
+    margin-right: 10px; 
+}
+.success { 
+    color: green; 
+}
+.danger { 
+    color: red; 
+}
