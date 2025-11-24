@@ -19,6 +19,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Turns off unnecessary tr
 # Connect the database (from models.py) to this Flask app
 db.init_app(app)
 
+# ---------------- DATABASE SETUP ----------------
+# This creates the tables automatically when the app starts (Required for Railway/Production)
+with app.app_context():
+    db.create_all()
 
 # ---------------- HOME PAGE ----------------
 @app.route('/')
